@@ -39,3 +39,30 @@ int open(const char *path,int flag); //成功返回文件描述符，失败返�
 | O_WRONLY | 只写打开                   |
 | O_RDWR   | 读写打开                   |
 
+
+
+#### 2.关闭文件
+
+C语言学习过程中提到过，**使用文件后必须关闭**。
+
+```C
+#include<unistd.h>
+
+int close(int fd);  //成功返回0，失败返回-1
+```
+
+此函数不仅**可以关闭文件也可以关闭套接字**，这也再次证明了对于Linux来说“万物皆文件”。
+
+
+
+#### 3.写数据到文件
+
+写数据主要使用`write()`函数。Linux中不区分文件和套接字，所以通过socket向其他计算机传输数据时也会用到此函数。
+
+```C
+#include<unistd.h>
+
+ssize_t write(int fd,const void* buf,size_t nbytes);  //成功时返回写入字节数，否则-1
+```
+
+其中参数`fd`是要写入数据的文件描述符，`buf`是保存要传输的数据缓冲区地址，`nbytes`是需要传输的字节数。
