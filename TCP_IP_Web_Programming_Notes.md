@@ -55,7 +55,7 @@ int close(int fd);  //成功返回0，失败返回-1
 
 
 
-#### 3.写数据到文件
+#### 3.写文件
 
 写数据主要使用`write()`函数。Linux中不区分文件和套接字，所以通过socket向其他计算机传输数据时也会用到此函数。
 
@@ -92,6 +92,47 @@ int main()
     
     if(write(fd,buf,sizeof(buf)) == -1) //写数据
         error_handle("write() error!");
+    
+    close(fd);  //关闭文件
+    
+    return 0;
+}
+```
+
+需要说明的是文件打开模式是三种模式综合：创建空文件并只能写，若存在data.txt文件则清空文件的全部数据。
+
+
+
+#### 4.读文件
+
+```C
+#include<unistd.h>
+
+ssize_t read(int fd,void* buf,size_t nbytes); //成功返回接收字节数（遇文件结尾返回0），失败返回-1
+```
+
+
+
+```C
+##include<stdio.h>
+#include<stdlib.h>
+#include<fcntl.h>
+#include<unistd.h>
+void err_handle(char* message);
+
+int main()
+{
+    int fd;
+    char buf[BUF_SIZE];
+    
+    fd = open("data.txt",O_RDONLY);  //打开文件，模式为只读
+    if(fd == -1)
+        err_handle("open() error!");
+    printf("file descriptor: %d \n",fd);
+    
+    if(read(fd,buf,sizeof(buf)) == -1)  //读取文件数据
+        err_handle("read() error!");
+    printf("file data: %s",buf);
     
     close(fd);  //关闭文件
     
