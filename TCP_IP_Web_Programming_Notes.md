@@ -65,4 +65,37 @@ int close(int fd);  //成功返回0，失败返回-1
 ssize_t write(int fd,const void* buf,size_t nbytes);  //成功时返回写入字节数，否则-1
 ```
 
-其中参数`fd`是要写入数据的文件描述符，`buf`是保存要传输的数据缓冲区地址，`nbytes`是需要传输的字节数。
+其中参数`fd`是要写入数据的文件描述符，`buf`是保存要传输的数据缓冲区地址，`nbytes`是需要传输的字节数。`size_t`是typedef声明的unsigned in类型，`ssize_t`是typedef声明的signed int类型。
+
+> `size_t`与`ssize_t`都是元数据类型（primitive），在`<sys/types.h>`中由定义
+
+
+
+一个创建新文件并写入数据的例子：
+
+```C
+#include<stdio.h>
+#include<stdlib.h>
+#include<fcntl.h>
+#include<unistd.h>
+void err_handle(char* message);
+
+int main()
+{
+    int fd;
+    char buf[] = "Let's go!\n";
+    
+    fd = open("data.txt",O_CREAT|O_WRONLY|O_TRUNC);//创建并打开文件
+    if(fd == -1)
+        err_handle("open() error!");
+    printf("file descriptor: %d\n",fd);
+    
+    if(write(fd,buf,sizeof(buf)) == -1) //写数据
+        error_handle("write() error!");
+    
+    close(fd);  //关闭文件
+    
+    return 0;
+}
+```
+
