@@ -219,3 +219,20 @@ int socket(int domain,int type,int protocol);
     前两个参数已经可以创建所需套接字了，大多数情况下第三个参数传递0即可。
 
     但是同一协议族中可能存在多个数据传输方式相同的协议，此时就需要向第三个参数传递指定最终的协议信息。
+
+
+
+书中的案例都是以**IPv4**为例，且为**面向连接**的数据传输方式，这样定义下来最终的协议只有**IPPROTO_TCP**这样一个结果（所以此时第三个参数可以设置为0）具体实现如下：
+
+```C
+int socket_fd1 = socket(PF_INET,SOCK_STREAM,IPPROTO_TCP);
+```
+
+
+
+接下来创建**IPv4**中**面向消息**数据传输的socket，最终有前两个参数确定到协议只能是**IPPROTO_UDP**，具体实现如下：
+
+```C
+int socket_fd2 = socket(PF_INET,SOCK_DGRAM,IPPROTO_UDP);
+```
+
