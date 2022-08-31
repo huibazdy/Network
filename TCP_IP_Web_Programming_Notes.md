@@ -287,10 +287,10 @@ IPv4使用四个字节来表示IP地址，按**网络地址**和**主机地址**
 int bind(int sockfd,struct sockaddr *myaddr,socklen_t addrlen);
 ```
 
-其中第二个参数（一个结构体）就指定了IP地址与端口号信息：
+其中第二个参数（一个结构体，以结构体指针形式传递给函数）指定了IP地址与端口号信息：
 
 ```C
-struct sockaddr_in
+struct sockaddr_in  //保存IPv4地址信息的结构体
 {
     sa_family_t     sin_family;   //地址族
     uint16_t        sin_port;     //TCP/UDP 16位端口号
@@ -304,7 +304,32 @@ struct sockaddr_in
 ```C
 struct in_addr
 {
-    In_addr_t    s_addr;  //32位IP地址
+    in_addr_t    s_addr;  //32位IP地址
 };
 ```
 
+
+
+![image-20220831175615039](https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202208311756091.png)定义额外的数据类型是为了扩展性。例如使用int32_t类型，能保证在任何硬件平台上都保证是4个字节。
+
+
+
+## 字节序
+
+不同CPU将数据保存到内存的方式是不同的，以数字1为例，其16位二进制表示为：
+
+`0000 0000 0000 0001`
+
+有的CPU以顺序存入内存，但有的会以倒序（高位字节放低位地址）存入内存：
+
+`0001 0000 0000 0000`
+
+这种情况涉及到两个概念，即：大端序和小端序（以整数）
+
+* **大端序（Big Endian）**
+
+    高位字节存放低位地址——即倒序
+
+* **小端序（Little Endian）**
+
+    高位字节存放高位地址——即正常顺序
