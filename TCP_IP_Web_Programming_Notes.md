@@ -266,4 +266,45 @@ IPv4使用四个字节来表示IP地址，按**网络地址**和**主机地址**
 
 
 
-一台计算机中的**网卡**（Network Interface card，NIC）是实现数据传输的物理设备。
+**端口号就是同一操作系统内，为区分不同套接字而设置的**。端口号由16位二进制组成，范围是：`0~65535`。其中`0~1023`是**知名端口**（Well-known Port）分配给特定程序。所以为套接字分配端口号时要避免使用这个范围的端口号。
+
+
+
+一台计算机中的**网卡**（Network Interface card，NIC）是实现数据传输的物理设备。网卡收到的数据中有端口号字段，来指明数据具体分配到哪个端口。
+
+![image-20220831173813782](https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202208311738837.png)
+
+
+
+总而言之，数据传输的目标地址**必须同时包含IP地址与端口号**，这样数据才能传给应用程序。
+
+
+
+## bind函数
+
+```C
+#include<sys/socket.h>
+int bind(int sockfd,struct sockaddr *myaddr,socklen_t addrlen);
+```
+
+其中第二个参数（一个结构体）就指定了IP地址与端口号信息：
+
+```C
+struct sockaddr_in
+{
+    sa_family_t     sin_family;   //地址族
+    uint16_t        sin_port;     //TCP/UDP 16位端口号
+    struct in_addr  sin_addr;     //32位IP地址
+    char            sin_zero[8];  //不使用
+};
+```
+
+其中IP地址的定义使用到了另一个结构体in_addr：
+
+```C
+struct in_addr
+{
+    In_addr_t    s_addr;  //32位IP地址
+};
+```
+
