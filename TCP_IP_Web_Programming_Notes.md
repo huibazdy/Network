@@ -1,3 +1,41 @@
+### 创建套接字
+
+#### 1. 创建socket
+
+```C
+#include<sys/socket.h>
+int socket(int domain,int type,int protocol);
+```
+
+
+
+#### 2. 给socket分配IP与端口号
+
+```C
+#include<sys/socket.h>
+int bind(int sockfd,struct sockaddr *myaddr,socklen_t addrlen);
+```
+
+
+
+#### 3. 将socket转为监听状态
+
+```C
+#include<sys/socket.h>
+int listen(int sockfd,int backlog);
+```
+
+
+
+#### 4. 受理连接请求
+
+```C
+#include<sys/socket.h>
+int accept(int sockfd,struct sockaddr *addr,socklen_t *addrlen);
+```
+
+
+
 ### 文件描述符（File Descriptor）
 
 > **使用Linux提供的文件I/O函数，首先需要理解文件描述符**
@@ -139,4 +177,8 @@ int main()
     return 0;
 }
 ```
+
+
+
+### 文件描述符与套接字
 
