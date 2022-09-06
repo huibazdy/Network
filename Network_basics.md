@@ -54,14 +54,33 @@ ADSL的优点：不需要重新布线，利用已有的电话线即可（许多�
 
 <img src="https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209061138946.png" alt="image-20220906113824909"  />
 
-当数据部分是ASCII码组成的文本文件时，可以使用特殊的帧定界方法，称为**帧定界符**。	帧定界符由**SOH**（Start of Header）和**EOT**（End of Transmission）组成，他们是名称，实际存在为十六进制ASCII码**01**和**04**。
+当数据部分是ASCII码组成的文本文件时，可以使用特殊的帧定界方法，称为**帧定界符**。	帧定界符由**SOH**（Start of Header）和**EOT**（End of Transmission）组成，他们是名称，实际表现为十六进制ASCII码**01**和**04**。
 
-<img src="https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209061159666.png" alt="image-20220906115902630" style="zoom:80%;" />
+<img src="https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209061159666.png" alt="image-20220906115902630"  />
+
+
 
 ### 2.2 透明传输
 
+当传输的数据是文本文件时，由于文本文件中的字符都是从键盘上输入的，故不会在数据部分出现像SOH与EOT这样的帧定界控制字符。
 
+无论从**键盘**上输入什么**字符**都可以放在这样的帧（**ASCII码文本文件**数据）中传输过去，因此称这样的传输是**透明传输**。
+
+当传输的是帧数据部分是**非ASCII码文本文件**时（二进制计算机程序、图像等），有可能遇到**“EOT”**（二进制数据**00000100**），此时数据无法完整传过去：
+
+![image-20220906144643318](https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209061446374.png)
 
 
 
 ### 2.3 差错控制
+
+> 差错可以分为比特差错与传输差错
+
+* 比特差错
+* 误码率（BER）
+* 循环冗余检验（CRC）
+* 帧检验序列（FCS）
+
+
+
+* 传输差错：帧丢失、帧重复、帧失序
