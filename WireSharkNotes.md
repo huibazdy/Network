@@ -77,20 +77,48 @@
 
 ### 实例分析
 
-#### 三次挥手
+#### 三次握手
 
 ![image-20220907163953644](https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209071639682.png)
 
-* 第一次挥手（客户端发送TCP请求）
+* 第一次握手（客户端发送TCP请求）
 
     1. `61658->443`表示客户端请求连接
-    2. `seq=0`且`[SYN]`表示SYN置为1
+    2. `seq=0`且`[SYN]`表示建立连接的标志位SYN置为1
 
     ![image-20220907165812685](https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209071658725.png)
 
-* 第二次挥手（服务端响应TCP请求）
+* 第二次握手（服务端响应TCP请求）
 
     1. `443->61658`表示服务端口响应客户端口的TCP请求
     2. `seq=0`且`[SYN]`置位为1，返回确认号`[ACK]`且ACK号为客户端发过来的seq号加1，即为1
 
     ![image-20220907170203794](https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209071702836.png)
+
+* 第三次握手（客户端检查确认号）
+    1. `seq=1`
+    2. `SYN=0`：
+    3. `ACK=1`：对服务端发送的seq加1
+
+
+
+#### 四次挥手
+
+![image-20220907175410319](https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209071754352.png)
+
+* 第一次挥手（客户端向服务端发起断开请求）
+
+    1. `FIN=1`
+    2. `ACK=1`
+
+* 第二次挥手
+
+    
+
+* 第三次挥手
+
+    
+
+* 第四次挥手
+
+    
