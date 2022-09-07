@@ -1,4 +1,4 @@
-# WireShark笔记
+# WireShark分析TCP/IP
 
 【参考资料汇总】
 
@@ -8,9 +8,7 @@
 * https://zhuanlan.zhihu.com/p/92993778
 * https://developer.aliyun.com/article/906989
 
-
-
-## 0825
+## 一、wireshark基本使用
 
 这里举例Windows环境，利用`ipconfig`命令查看本地网络配置信息：
 
@@ -50,3 +48,49 @@
 
 * 在开始**抓取前**设置抓取过滤规则
 * 在**抓取后**设置显示过滤规则
+
+
+
+
+
+## 二、IP协议
+
+需要知道的是，每个数据包的某层协议数据信息都会表明上一层是什么协议，例如：
+
+![image-20220907161456438](https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209071614487.png)
+
+在这里，打开数据链路层的数据信息，可以看到有一个`Type`字段在最后标明上一层使用的协议是IPv4。
+
+
+
+同理，同一个数据包，在网络层数据信息的最后`Protocol`字段也标明了上层使用的协议是：TCP
+
+![image-20220907162027730](https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209071620765.png)
+
+
+
+## 三、TCP协议
+
+### TCP报文
+
+<img src="https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209071624749.png" alt="image-20220907162429702"  />
+
+### 实例分析
+
+#### 三次挥手
+
+![image-20220907163953644](https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209071639682.png)
+
+* 第一次挥手（客户端发送TCP请求）
+
+    1. `61658->443`表示客户端请求连接
+    2. `seq=0`且`[SYN]`表示SYN置为1
+
+    ![image-20220907165812685](https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209071658725.png)
+
+* 第二次挥手（服务端响应TCP请求）
+
+    1. `443->61658`表示服务端口响应客户端口的TCP请求
+    2. `seq=0`且`[SYN]`置位为1，返回确认号`[ACK]`且ACK号为客户端发过来的seq号加1，即为1
+
+    ![image-20220907170203794](https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209071702836.png)
