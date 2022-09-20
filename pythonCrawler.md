@@ -53,9 +53,23 @@ det www.baidu.com
 
 有的所有者可能会封禁爬虫，最好将下载速度控制得保守些。
 
-可以利用`WHOIS`协议查询域名的注册者是谁。python中有一个对应该协议的封装库`python-whois`，使用前用pip安装即可。
+可以利用`WHOIS`协议查询域名的注册者是谁。python中有一个对应该协议的封装库`python-whois`，使用前用pip安装即可（`pip install python-whois`）。
 
 ```python
-import python-whois
-print(whois.whois(zdy450.site)) #这里用我之前注册过的域名来测试
+import whois
+print(whois.whois('www.baidu.com')) #这里用百度域名来测试
 ```
+
+结果如下：
+
+<img src="https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209201741601.png" alt="image-20220920174155514"  />
+
+可以看到最后的`"org"`字段是：北京百度公司。
+
+
+
+* **三种网站爬取方法**
+    1. 爬取`sitemap`网站地图
+    2. 使用数据库ID遍历每个网页
+    3. 跟踪网页链接
+
