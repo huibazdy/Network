@@ -46,3 +46,16 @@ pip install detectem
 ```python
 det www.baidu.com
 ```
+
+
+
+* **网站所有者**
+
+有的所有者可能会封禁爬虫，最好将下载速度控制得保守些。
+
+可以利用`WHOIS`协议查询域名的注册者是谁。python中有一个对应该协议的封装库`python-whois`，使用前用pip安装即可。
+
+```python
+import python-whois
+print(whois.whois(zdy450.site)) #这里用我之前注册过的域名来测试
+```
