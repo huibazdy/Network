@@ -86,3 +86,81 @@ print(whois.whois('www.baidu.com')) #这里用百度域名来测试
 
 
 * **下载网页**
+
+使用`urllib`模块的一些函数进行网页下载：
+
+```python
+import urllib.request
+def download(url):
+    return urllib.request.urlopen(url).read()
+```
+
+
+
+但是时常会有网页不存在等***异常***情况需要捕获并处理：
+
+```python
+import urllib.request
+from urllib.error import URLError,HTTPError,ContentTooShortError
+def download(url):
+    print('Download:',url)
+    try:
+        html = urllib.request.urlopen(url).read()
+    except (URLError,HTTPError,ContentTooShortError) as e:
+        print('Download error:',e.reason)
+        html = None;
+    return html
+# 出现URL下载错误时，该函数能捕获异常并返回None
+```
+
+
+
+有时会遇到暂时性错误（如：5xx错误类型），可以重新下载
+
+```python
+import urllib.request
+from urllib.error import URLError,HTTPError,ContentTooShortError
+def download(url,num_retries=2):  #添加重新下载参数
+    print('Download:',url)
+    try:
+        html = urllib.request.urlopen(url).read()
+    except (URLError,HTTPError,ContentTooShortError) as e:
+        print('Download error:',e.reason)
+        html = None;
+        if num_retries > 0:  
+            # 遇5xx错误码递归调用自身进行重试
+            if hasattr(e,'code') and 500 <= e.code < 600:  
+                return download(url,num_retries - 1)
+    return html
+```
+
+
+
+* **设置用户代理**
+
+下载网页的默认用户代理是：`python-urllib/3.x`（最后是python版本号）。
+
+但使用**可辨识**的用户代理可以避免网络爬虫遇到一些问题，甚至一些网站会封禁这个默认用户代理。
+
+因此我们可以自己设定用户代理，下例设置了一个名为`wswp`（Web Scraping with Python）：
+
+```python
+import urllib.request
+from urllib.error import URLError,HTTPError,ContentTooShortError
+def download(url,user_agent='wswp',num_retries=2):  #添加自定义用户代理wswp
+    print('Download:',url)
+    request = urllib.request.Request(url)
+    request.add_header('User-agent',user_agent)
+    try:
+        html = urllib.request.urlopen(request).read()
+    except (URLError,HTTPError,ContentTooShortError) as e:
+        print('Download error:',e.reason)
+        html = None;
+        if num_retries > 0:  
+            if hasattr(e,'code') and 500 <= e.code < 600:  
+                return download(url,num_retries - 1)
+    return html
+#上述函数满足了三个需求：1）下载；2）捕获异常；3）重试下载；4）设置用户代理
+#这个下载函数之后会经常用到，非常典型
+```
+
