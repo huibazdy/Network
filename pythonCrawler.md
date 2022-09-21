@@ -186,8 +186,10 @@ flowchart TB
 
 ```python
 import re
+import urllib
 import urllib.request
 from urllib.error import URLError,HTTPError,ContentTooShortError
+url = 'http://example.python-scraping.com/sitemap.xml'
 def download(url,user_agent='wswp',num_retries=2,charset='utf-8'):#添UTF-8参数
     print('Download:',url)
     request = urllib.request.Request(url)
@@ -197,7 +199,8 @@ def download(url,user_agent='wswp',num_retries=2,charset='utf-8'):#添UTF-8参�
         cs = response.headers.get_content_charset()
         if not cs:
             cs = charset
-        html = response.read().decode(cs)
+        #想要用正则表达式处理响应，响应需要是字符串，故更新字符编码为UTF-8将字节变为字符串
+        html = response.read().decode(cs)  #read方法返回的响应是字节形式
     except (URLError,HTTPError,ContentTooShortError) as e:
         print('Download error:',e.reason)
         html = None;
@@ -213,3 +216,56 @@ def craw_sitemap(url):
         html = download(link)
 ```
 
+
+
+* **数据库ID遍历**
+
+在[示例网站](http://example.python-scraping.com/places/default/index/0)中，我们发现不同国家的网页URL只有最后一部分有区别：
+
+```html
+http://example.python-scraping.com/places/default/view/Afghanistan-1
+http://example.python-scraping.com/places/default/view/Brazil-32
+```
+
+URL中包含**页面别名**是非常普遍的做法，这里的页面别名就是国家或地区名加上ID，可以对**搜索引擎优化**（Search Engine Optimization，**SEO**）起到帮助作用。
+
+一般Web服务器会忽略别名的字符串，**只使用ID来匹配**数据库中的相关记录，例如：将上例中Brazil去掉只留下32链接依旧可以生效。
+
+```python
+import itertools
+
+def crawl_site(url):
+    for page in itertools.count(1):
+        pg_url = '{}{}'.format(url,page)
+        html = download(pg-url)
+        if html is None:
+            break
+
+url = 'http://example.python-scraping.com/places/default/view/-'            
+crawl_site(url)  
+
+# 在这段代码中，我们对ID进行遍历，直到出现下载错误为止
+```
+
+这种实现方式存在一个缺陷是：某些记录可能已被删除，ID之间不是连续的，只要访问到某个间隔点（发现缺失ID）爬虫就会退出。需要针对这种情况进行改进：
+
+```python
+def crawl_site(url,max_errors=5):  #设定最大错误次数5
+    for page in itertools.count(1):
+        pg_url = '{}{}'.format(url,page)
+        html = download(pg-url)
+        if html is None:
+            num_errors += 1
+            if num_errors == max_errors: #如果连续发生5次错误才会退出爬虫程序
+                break
+            else:
+                num_errors = 0
+```
+
+
+
+
+
+* **链接爬虫**
+
+有时候我们需要让爬虫表现得更像普通用户，跟踪链接，访问感兴趣的内容。
