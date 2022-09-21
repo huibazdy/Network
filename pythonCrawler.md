@@ -12,7 +12,7 @@
 
 * **Sitemap**
 
-`Sitemap`文件可以帮助爬虫定位网站最新内容，而无需爬取所有网页（[网站地图标准定义](https://sitemaps.org/protocol.html)）。“网站地图”提供了所有网页链接，但可能存在缺失、过期、不完整的问题。
+`Sitemap`文件可以帮助爬虫定位网站最新内容，而无需爬取所有网页（[网站地图标准定义](https://sitemaps.org/protocol.html)）。“网站地图”提供了*<u>所有网页链接</u>*，但可能存在缺失、过期、不完整的问题。
 
 
 
@@ -70,8 +70,8 @@ print(whois.whois('www.baidu.com')) #这里用百度域名来测试
 
 * **三种网站爬取方法**
     1. 爬取`sitemap`网站地图
-    2. 使用数据库ID遍历每个网页
-    3. 跟踪网页链接
+    2. 使用`数据库ID遍历`每个网页
+    3. 跟踪`网页链接`
 
 
 
@@ -160,7 +160,56 @@ def download(url,user_agent='wswp',num_retries=2):  #添加自定义用户代理
             if hasattr(e,'code') and 500 <= e.code < 600:  
                 return download(url,num_retries - 1)
     return html
+
 #上述函数满足了三个需求：1）下载；2）捕获异常；3）重试下载；4）设置用户代理
 #这个下载函数之后会经常用到，非常典型
+```
+
+下载网页函数功能拆解：
+
+```mermaid
+flowchart LR
+    A([抓取页面函数]) --功能1--> B(下载)
+    A  --功能2--> C(异常处理)
+    A  --功能3--> D(重试)
+    A  --功能4--> E(自定义代理)
+```
+
+
+
+* **网站地图爬虫**
+
+```mermaid
+flowchart TB
+    A([从robots.txt中获取Sitemap]) --> B([从Sitemap中提取URL])
+```
+
+```python
+import re
+import urllib.request
+from urllib.error import URLError,HTTPError,ContentTooShortError
+def download(url,user_agent='wswp',num_retries=2,charset='utf-8'):#添UTF-8参数
+    print('Download:',url)
+    request = urllib.request.Request(url)
+    request.add_header('User-agent',user_agent)
+    try:
+        response = urllib.request.urlopen(request)
+        cs = response.headers.get_content_charset()
+        if not cs:
+            cs = charset
+        html = response.read().decode(cs)
+    except (URLError,HTTPError,ContentTooShortError) as e:
+        print('Download error:',e.reason)
+        html = None;
+        if num_retries > 0:  
+            if hasattr(e,'code') and 500 <= e.code < 600:  
+                return download(url,num_retries - 1)
+    return html
+
+def craw_sitemap(url):
+    sitemap = download(url)
+    links = re.findall('<loc>(.*?)</loc>',sitemap)
+    for link in links:
+        html = download(link)
 ```
 
