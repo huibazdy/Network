@@ -268,4 +268,27 @@ def crawl_site(url,max_errors=5):  #设定最大错误次数5
 
 * **链接爬虫**
 
-有时候我们需要让爬虫表现得更像普通用户，跟踪链接，访问感兴趣的内容。
+之前的两种：根据sitemap和数据库ID爬取方式可以将需要下载的网页数量将至最低。但有时我们需要让爬虫表现得更像普通用户，跟踪链接，访问感兴趣的内容。
+
+通过跟踪每个链接的方式，我们可以很容易下载整个网站的页面，但可能下载很多不需要的网页。
+
+```python
+import re
+def link_crawler(start_url,link_regex):
+    crawl_queue = [start_url]
+    while crawl_queue:
+        url = crawl_queue.pop()
+        html = download(url)
+        if html is not None:
+            continue
+        for link in get_links(html):
+            if re.match(link_regex,link):
+                crawl_queue.append(link)
+                
+def get_links(html):
+    webpage_regex = re.compile("""<a[^>]+href=["'](.*?)["']""",re.IGNORECASE)
+    return webpage_regex.findall(html)
+```
+
+> ***正则表达式***是从***字符串中抽取信息***的高效工具，程序员应该学会阅读和编写正则表达式。
+
