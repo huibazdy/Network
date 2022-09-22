@@ -292,3 +292,57 @@ def get_links(html):
 
 > ***正则表达式***是从***字符串中抽取信息***的高效工具，程序员应该学会阅读和编写正则表达式。
 
+
+
+
+
+# 二、数据抓取
+
+## 2.1 分析网页
+
+
+
+## 2.2 三种网页抓取方法
+
+### 2.2.1 正则表达式
+
+Python正则表达式的万正介绍可以参考：[正则表达式Python参考文档](https://docs.python.org/2/howto/regex.html)。即使使用过其他编程语言的正则表达式，依然推荐逐步学习Python正则表达式的写法。
+
+例如在之前的国家与地区的示例网页中，选取国家后，我们对国土面积感兴趣，可以利用正则表达式抓取网页中的`<td>`元素。
+
+```python
+import re
+from chp1.advanced_link_crawler import download #从写好的代码库调用前面章节的函数
+url = 'http://example.python-scraping.com/places/default/view/Afghanistan-1'
+html = download(url)
+re.findall(r'<td class="w2p_fw">(.*?)</td>',html)
+```
+
+
+
+### 2.2.2 BeautifulSoup模块
+
+BeautifulSoup是一个非常流行的Python库，提供了定位内容的便捷接口。该模块的使用步骤：
+
+1. 安装`html5lib`模块配合bs4正确解析**缺失属性引号**或**闭合标签**
+2. 将已下载的HTML文档内容解析为**soup文档**（使用html.paeser有时并不会正确解析结果）
+3. 使用`find()`或`find_all()`方法定位我们需要的元素
+
+```python
+from bs4 import BeautifulSoup
+url = 'http://example.python-scraping.com/places/default/view/Afghanistan-1'
+html = download(url)
+soup = BeautifulSoup(html)
+tr = soup.find(attrs={'id':'place_area_row'})
+td = soup.find(attrs={'class':'w2p_fw'})
+area = td.text
+print(area)
+```
+
+> 这段代码虽然看上去比正则表达式的代码更复杂，但更易构造和理解，且多余空格和标签属性的小变化无须再担心。
+>
+> 页面中即使包含了不完整的HTML，BeautifulSoup也能帮我们整理该页面，从而可以抽取到网站代码中的数据。
+
+
+
+### 2.2.3 lxml
