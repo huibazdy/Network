@@ -346,3 +346,33 @@ print(area)
 
 
 ### 2.2.3 lxml
+
+
+
+# 三、requests库
+
+```python
+import requests
+url = 'http://www.webscrapingfordatascience.com/basichttp/'
+
+#模拟http中GET方法
+r = requests.get(url)
+
+#打印http中状态码
+print(r.status_code)
+
+#打印文本状态码
+print(r.reason)
+
+#打印http响应头部
+print(r.headers)
+
+#request的信息
+print(r.request)
+
+#
+print(r.request.headers)
+
+#
+print(r.text)
+```
