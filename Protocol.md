@@ -9,3 +9,13 @@
 
 <img src="https://raw.githubusercontent.com/huibazdy/TyporaPicture/main/202209271629327.png" alt="image-20220927162937245" style="zoom: 50%;" />
 
+
+
+## ARP
+
+> ARP的作用是将IP地址转为在链路层使用的`48bit`以太网地址。
+
+IP地址与链路层地址之间的互相转换通过`ARP`与`RARP`来实现。
+
+
+
